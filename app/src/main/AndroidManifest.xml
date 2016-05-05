@@ -53,7 +53,11 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info"></meta-data>
         </receiver>
-
+        <service
+            android:name=".widget.DetailWidgetRemoteViewService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
         <provider
             android:name=".data.generated.QuoteProvider"
             android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"

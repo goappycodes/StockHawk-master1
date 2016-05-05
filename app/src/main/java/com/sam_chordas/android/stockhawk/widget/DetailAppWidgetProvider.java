@@ -40,14 +40,13 @@ public class DetailAppWidgetProvider extends AppWidgetProvider {
             }
             boolean useDetailActivity = context.getResources().getBoolean(R.bool.use_detail_activity);
             Intent clickIntentTemplate = useDetailActivity
-                    ? new Intent(context, Line_graph.class)
+                    ? new Intent(context, MyStocksActivity.class)
                     : new Intent(context, MyStocksActivity.class);
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(clickIntentTemplate)
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
             remoteViews.setEmptyView(R.id.widget_list, R.id.widget_empty);
-
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appwidgetId, remoteViews);
         }

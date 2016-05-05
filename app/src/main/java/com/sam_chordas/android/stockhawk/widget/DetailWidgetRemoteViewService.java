@@ -27,17 +27,21 @@ public class DetailWidgetRemoteViewService extends RemoteViewsService {
 
     public final String LOG_TAG = DetailWidgetRemoteViewService.class.getSimpleName();
     private static final String[] FORECAST_COLUMNS = {
-            QuoteColumns._ID,
+            QuoteDatabase.QUOTES + "." + QuoteColumns._ID,
             QuoteColumns.SYMBOL,
             QuoteColumns.BIDPRICE,
-            QuoteColumns.CHANGE
+            QuoteColumns.PERCENT_CHANGE,
+            QuoteColumns.CHANGE,
+            QuoteColumns.ISUP
     };
 
     // these indices must match the projection
     static final int INDEX_STOCK_ID = 0;
     static final int INDEX_SYMBOL= 1;
     static final int INDEX_BIDPRICE = 2;
-    static final int INDEX_CHANGE = 3;
+    static final int INDEX_PERCENT_CHANGE = 3;
+    static final int INDEX_CHANGE = 4;
+    static final int INDEX_ISUP = 5;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -92,31 +96,19 @@ public class DetailWidgetRemoteViewService extends RemoteViewsService {
                 int weatherId = data.getInt(INDEX_STOCK_ID);
                 String symbol = data.getString(INDEX_SYMBOL);
                 long bid_price = data.getLong(INDEX_BIDPRICE);
-                String change = data.getString(INDEX_CHANGE);
+                double change = data.getDouble(INDEX_CHANGE);
                 Log.v("widget_symbol",symbol);
                 Log.v("widgt_bidprice",bid_price+"");
-                Log.v("widget_change",change);
+                Log.v("widget_change",String.valueOf(change));
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                    setRemoteContentDescription(views, symbol);
-                }
                 views.setTextViewText(R.id.stock_symbol, symbol);
                 views.setTextViewText(R.id.bid_price, bid_price+"");
-                views.setTextViewText(R.id.change, change);
+                views.setTextViewText(R.id.change, String.valueOf(change));
 
                 final Intent fillInIntent = new Intent();
-
-                /*Uri weatherUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-                        locationSetting,
-                        dateInMillis);*/
-                fillInIntent.putExtra("symbol",symbol);
+                fillInIntent.setData(QuoteProvider.Quotes.withSymbol(symbol));
                 views.setOnClickFillInIntent(R.id.widget_list, fillInIntent);
                 return views;
-            }
-
-            @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
-            private void setRemoteContentDescription(RemoteViews views, String description) {
-                views.setContentDescription(R.id.stock_symbol, description);
             }
 
             @Override
